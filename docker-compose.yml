@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGO_URL=mongodb://admin:admin123@mongodb:27017/dd_db?authSource=admin
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin123
+      - MONGO_INITDB_DATABASE=dd_db
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
